@@ -1,9 +1,0 @@
-data/
-*.pem
-*.log
-.terraform/
-*.tfstate
-*.tfstate.backup
-.terraform.lock.hcl
-__pycache__/
-*.pyc
