@@ -4,5 +4,5 @@
 .terraform.lock.hcl
 __pycache__/
 *.pyc
-**/.DS_Store
-**/.history/*
+.DS_Store
+.history
