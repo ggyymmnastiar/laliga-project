@@ -1,0 +1,222 @@
+[
+    {
+        "club": "Athletic Bilbao",
+        "played": 38,
+        "pressed_seqs": 557,
+        "ppda": 11.2,
+        "start_distance": 45.0,
+        "high_turnovers_total": 368,
+        "high_turnovers_shot_ending": 61,
+        "high_turnovers_goal_ending": 3,
+        "high_turnovers_shot_pct": "16.58%"
+    },
+    {
+        "club": "Barcelona",
+        "played": 38,
+        "pressed_seqs": 471,
+        "ppda": 8.7,
+        "start_distance": 43.9,
+        "high_turnovers_total": 294,
+        "high_turnovers_shot_ending": 51,
+        "high_turnovers_goal_ending": 10,
+        "high_turnovers_shot_pct": "17.35%"
+    },
+    {
+        "club": "Real Madrid",
+        "played": 38,
+        "pressed_seqs": 415,
+        "ppda": 11.5,
+        "start_distance": 43.3,
+        "high_turnovers_total": 279,
+        "high_turnovers_shot_ending": 65,
+        "high_turnovers_goal_ending": 11,
+        "high_turnovers_shot_pct": "23.30%"
+    },
+    {
+        "club": "Real Sociedad",
+        "played": 38,
+        "pressed_seqs": 429,
+        "ppda": 10.4,
+        "start_distance": 42.8,
+        "high_turnovers_total": 256,
+        "high_turnovers_shot_ending": 48,
+        "high_turnovers_goal_ending": 4,
+        "high_turnovers_shot_pct": "18.75%"
+    },
+    {
+        "club": "Getafe",
+        "played": 38,
+        "pressed_seqs": 497,
+        "ppda": 11.7,
+        "start_distance": 42.7,
+        "high_turnovers_total": 250,
+        "high_turnovers_shot_ending": 28,
+        "high_turnovers_goal_ending": 1,
+        "high_turnovers_shot_pct": "11.20%"
+    },
+    {
+        "club": "Atlético Madrid",
+        "played": 38,
+        "pressed_seqs": 427,
+        "ppda": 12.2,
+        "start_distance": 42.3,
+        "high_turnovers_total": 267,
+        "high_turnovers_shot_ending": 31,
+        "high_turnovers_goal_ending": 5,
+        "high_turnovers_shot_pct": "11.61%"
+    },
+    {
+        "club": "Real Betis",
+        "played": 38,
+        "pressed_seqs": 382,
+        "ppda": 13.6,
+        "start_distance": 42.0,
+        "high_turnovers_total": 269,
+        "high_turnovers_shot_ending": 58,
+        "high_turnovers_goal_ending": 7,
+        "high_turnovers_shot_pct": "21.56%"
+    },
+    {
+        "club": "Sevilla",
+        "played": 38,
+        "pressed_seqs": 390,
+        "ppda": 10.6,
+        "start_distance": 41.9,
+        "high_turnovers_total": 248,
+        "high_turnovers_shot_ending": 39,
+        "high_turnovers_goal_ending": 4,
+        "high_turnovers_shot_pct": "15.73%"
+    },
+    {
+        "club": "Osasuna",
+        "played": 38,
+        "pressed_seqs": 417,
+        "ppda": 13.3,
+        "start_distance": 41.7,
+        "high_turnovers_total": 252,
+        "high_turnovers_shot_ending": 33,
+        "high_turnovers_goal_ending": 1,
+        "high_turnovers_shot_pct": "13.10%"
+    },
+    {
+        "club": "Alaves",
+        "played": 38,
+        "pressed_seqs": 416,
+        "ppda": 11.5,
+        "start_distance": 41.4,
+        "high_turnovers_total": 233,
+        "high_turnovers_shot_ending": 44,
+        "high_turnovers_goal_ending": 4,
+        "high_turnovers_shot_pct": "18.88%"
+    },
+    {
+        "club": "Valencia",
+        "played": 38,
+        "pressed_seqs": 398,
+        "ppda": 13.5,
+        "start_distance": 41.4,
+        "high_turnovers_total": 252,
+        "high_turnovers_shot_ending": 40,
+        "high_turnovers_goal_ending": 4,
+        "high_turnovers_shot_pct": "15.87%"
+    },
+    {
+        "club": "Espanyol",
+        "played": 38,
+        "pressed_seqs": 438,
+        "ppda": 12.9,
+        "start_distance": 41.3,
+        "high_turnovers_total": 238,
+        "high_turnovers_shot_ending": 43,
+        "high_turnovers_goal_ending": 2,
+        "high_turnovers_shot_pct": "18.07%"
+    },
+    {
+        "club": "Rayo Vallecano",
+        "played": 38,
+        "pressed_seqs": 400,
+        "ppda": 9.9,
+        "start_distance": 41.3,
+        "high_turnovers_total": 244,
+        "high_turnovers_shot_ending": 42,
+        "high_turnovers_goal_ending": 2,
+        "high_turnovers_shot_pct": "17.21%"
+    },
+    {
+        "club": "Mallorca",
+        "played": 38,
+        "pressed_seqs": 342,
+        "ppda": 13.4,
+        "start_distance": 40.7,
+        "high_turnovers_total": 224,
+        "high_turnovers_shot_ending": 27,
+        "high_turnovers_goal_ending": 3,
+        "high_turnovers_shot_pct": "12.05%"
+    },
+    {
+        "club": "Levante",
+        "played": 38,
+        "pressed_seqs": 398,
+        "ppda": 13.6,
+        "start_distance": 40.7,
+        "high_turnovers_total": 234,
+        "high_turnovers_shot_ending": 40,
+        "high_turnovers_goal_ending": 5,
+        "high_turnovers_shot_pct": "17.09%"
+    },
+    {
+        "club": "Real Oviedo",
+        "played": 38,
+        "pressed_seqs": 293,
+        "ppda": 12.8,
+        "start_distance": 40.1,
+        "high_turnovers_total": 211,
+        "high_turnovers_shot_ending": 34,
+        "high_turnovers_goal_ending": 2,
+        "high_turnovers_shot_pct": "16.11%"
+    },
+    {
+        "club": "Elche",
+        "played": 38,
+        "pressed_seqs": 398,
+        "ppda": 9.8,
+        "start_distance": 39.9,
+        "high_turnovers_total": 226,
+        "high_turnovers_shot_ending": 44,
+        "high_turnovers_goal_ending": 3,
+        "high_turnovers_shot_pct": "19.47%"
+    },
+    {
+        "club": "Girona",
+        "played": 38,
+        "pressed_seqs": 359,
+        "ppda": 14.5,
+        "start_distance": 39.9,
+        "high_turnovers_total": 233,
+        "high_turnovers_shot_ending": 30,
+        "high_turnovers_goal_ending": 1,
+        "high_turnovers_shot_pct": "12.88%"
+    },
+    {
+        "club": "Celta Vigo",
+        "played": 38,
+        "pressed_seqs": 350,
+        "ppda": 13.9,
+        "start_distance": 39.5,
+        "high_turnovers_total": 214,
+        "high_turnovers_shot_ending": 33,
+        "high_turnovers_goal_ending": 5,
+        "high_turnovers_shot_pct": "15.42%"
+    },
+    {
+        "club": "Villarreal",
+        "played": 38,
+        "pressed_seqs": 367,
+        "ppda": 15.1,
+        "start_distance": 38.9,
+        "high_turnovers_total": 218,
+        "high_turnovers_shot_ending": 23,
+        "high_turnovers_goal_ending": 3,
+        "high_turnovers_shot_pct": "10.55%"
+    }
+]
