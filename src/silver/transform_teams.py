@@ -2,85 +2,36 @@
 Silver Layer — Transform Teams
 ================================
 Dua tahap transformasi:
-  Step 1  json_to_csv()   : Bronze JSON  →  CSV raw  (apa adanya, tanpa perubahan)
-  Step 2  transform()     : CSV raw      →  CSV clean (pembersihan kolom %)
+  Step 1  json_to_csv   : Bronze JSON  →  CSV raw  (apa adanya, tanpa perubahan)
+  Step 2  transform     : CSV raw      →  CSV clean (pembersihan kolom %)
 
 Output:
   data/silver/teams/csv_raw/    ← CSV 0 (salinan mentah)
   data/silver/teams/csv_clean/  ← CSV 1 (sudah bersih)
 """
 
-import logging
+import sys
 from pathlib import Path
 
 import pandas as pd
 
-# ---------------------------------------------------------------------------
-# Config
-# ---------------------------------------------------------------------------
-BASE_DIR = Path(__file__).resolve().parent.parent.parent  # root project
-BRONZE_DIR = BASE_DIR / "data" / "bronze" / "teams"
-SILVER_RAW_DIR = BASE_DIR / "data" / "silver" / "teams" / "csv_raw"
-SILVER_CLEAN_DIR = BASE_DIR / "data" / "silver" / "teams" / "csv_clean"
+# Tambahkan root project ke sys.path agar bisa import config & utils
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 
-TEAM_FILES = [
-    "teams_attacking",
-    "teams_defending",
-    "teams_passing",
-    "teams_pressing",
-    "teams_sequences",
-    "teams_misc",
-]
+from config.config import PATHS, TEAM_FILES
+from src.utils.helpers import strip_pct, json_to_csv, transform_csvs, get_logger
 
-# ---------------------------------------------------------------------------
-# Logging
-# ---------------------------------------------------------------------------
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s | %(levelname)-7s | %(message)s",
-    datefmt="%Y-%m-%d %H:%M:%S",
-)
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 # ===========================================================================
-# Step 1 — JSON → CSV raw (apa adanya)
+# Cleaner functions (spesifik per tabel)
 # ===========================================================================
-
-def json_to_csv() -> None:
-    """Baca setiap JSON dari Bronze, simpan sebagai CSV apa adanya (tanpa transformasi)."""
-
-    SILVER_RAW_DIR.mkdir(parents=True, exist_ok=True)
-    logger.info("=== STEP 1: JSON → CSV raw ===")
-
-    for name in TEAM_FILES:
-        src = BRONZE_DIR / f"{name}.json"
-        dst = SILVER_RAW_DIR / f"{name}.csv"
-
-        if not src.exists():
-            logger.warning("File tidak ditemukan: %s", src)
-            continue
-
-        df = pd.read_json(src)
-        df.to_csv(dst, index=False)
-        logger.info("✅  %s.json  →  %s  (%d rows, %d cols)", name, dst.name, len(df), len(df.columns))
-
-    logger.info("Step 1 selesai.\n")
-
-
-# ===========================================================================
-# Step 2 — CSV raw → CSV clean
-# ===========================================================================
-
-def _strip_pct(series: pd.Series) -> pd.Series:
-    """Hapus simbol '%' dan konversi ke float. Contoh: '13.73%' → 13.73"""
-    return series.str.replace("%", "", regex=False).astype(float)
-
 
 def _clean_attacking(df: pd.DataFrame) -> pd.DataFrame:
     """Bersihkan teams_attacking: konversi conversion_pct."""
     df = df.copy()
-    df["conversion_pct"] = _strip_pct(df["conversion_pct"])
+    df["conversion_pct"] = strip_pct(df["conversion_pct"])
     return df
 
 
@@ -88,12 +39,12 @@ def _clean_defending(df: pd.DataFrame) -> pd.DataFrame:
     """Bersihkan teams_defending: konversi 3 kolom pct."""
     df = df.copy()
     for col in ["avg_possession_pct", "ground_duels_won_pct", "aerial_duels_won_pct"]:
-        df[col] = _strip_pct(df[col])
+        df[col] = strip_pct(df[col])
     return df
 
 
 def _clean_passing(df: pd.DataFrame) -> pd.DataFrame:
-    """Bersihkan teams_passing: konversi 7 kolom pct."""
+    """Bersihkan teams_passing: konversi 8 kolom pct."""
     df = df.copy()
     pct_cols = [
         "avg_possession_pct",
@@ -106,14 +57,14 @@ def _clean_passing(df: pd.DataFrame) -> pd.DataFrame:
         "crosses_pct",
     ]
     for col in pct_cols:
-        df[col] = _strip_pct(df[col])
+        df[col] = strip_pct(df[col])
     return df
 
 
 def _clean_pressing(df: pd.DataFrame) -> pd.DataFrame:
     """Bersihkan teams_pressing: konversi high_turnovers_shot_pct."""
     df = df.copy()
-    df["high_turnovers_shot_pct"] = _strip_pct(df["high_turnovers_shot_pct"])
+    df["high_turnovers_shot_pct"] = strip_pct(df["high_turnovers_shot_pct"])
     return df
 
 
@@ -138,36 +89,29 @@ CLEANERS = {
 }
 
 
-def transform() -> None:
-    """Baca setiap CSV raw, bersihkan, dan simpan ke CSV clean."""
-
-    SILVER_CLEAN_DIR.mkdir(parents=True, exist_ok=True)
-    logger.info("=== STEP 2: CSV raw → CSV clean ===")
-
-    for name in TEAM_FILES:
-        src = SILVER_RAW_DIR / f"{name}.csv"
-        dst = SILVER_CLEAN_DIR / f"{name}.csv"
-
-        if not src.exists():
-            logger.warning("File tidak ditemukan: %s", src)
-            continue
-
-        df = pd.read_csv(src)
-        cleaner = CLEANERS.get(name)
-
-        if cleaner:
-            df = cleaner(df)
-
-        df.to_csv(dst, index=False)
-        logger.info("✅  %s (raw)  →  %s (clean)  (%d rows, %d cols)", src.name, dst.name, len(df), len(df.columns))
-
-    logger.info("Step 2 selesai.\n")
-
-
 # ===========================================================================
 # Main
 # ===========================================================================
 
+def run_transform_teams() -> None:
+    """Jalankan seluruh pipeline Silver untuk teams."""
+    logger.info("=== SILVER TRANSFORM: Teams ===\n")
+
+    # Step 1: JSON → CSV raw
+    json_to_csv(
+        source_dir=PATHS["bronze_teams"],
+        target_dir=PATHS["silver_teams_raw"],
+        file_list=TEAM_FILES,
+    )
+
+    # Step 2: CSV raw → CSV clean
+    transform_csvs(
+        source_dir=PATHS["silver_teams_raw"],
+        target_dir=PATHS["silver_teams_clean"],
+        file_list=TEAM_FILES,
+        cleaners=CLEANERS,
+    )
+
+
 if __name__ == "__main__":
-    json_to_csv()
-    transform()
+    run_transform_teams()
