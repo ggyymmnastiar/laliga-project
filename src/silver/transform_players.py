@@ -36,8 +36,14 @@ def _clean_attacking(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def _clean_defending(df: pd.DataFrame) -> pd.DataFrame:
-    """Bersihkan players_defending: konversi ground_duels_pct, aerial_duels_pct."""
+    """Bersihkan players_defending: konversi ground_duels_pct, aerial_duels_pct.
+    Drop kolom 'open_play_total' yang 100% null (artifact dari JSON parsing).
+    """
     df = df.copy()
+    # Drop kolom stray yang muncul dari JSON parsing
+    cols_to_drop = [c for c in ["open_play_total"] if c in df.columns]
+    if cols_to_drop:
+        df = df.drop(columns=cols_to_drop)
     for col in ["ground_duels_pct", "aerial_duels_pct"]:
         df[col] = strip_pct(df[col])
     return df
