@@ -1,9 +1,8 @@
 -- ===========================================================================
--- Gold Layer — Load Teams (Star Schema)
+-- Gold Layer — Load Teams (One Big Table)
 -- ===========================================================================
 -- Memuat data dari Silver ke Gold:
---   1. gold.dim_team             ← DISTINCT club dari silver
---   2. gold.fact_team_statistics ← JOIN 6 tabel silver + dim_team + derived
+--   gold.teams_statistics ← JOIN 6 tabel silver + derived per-game
 --
 -- CARA PAKAI:
 --   Opsi 1: Jalankan statement satu per satu di DBeaver.
@@ -15,18 +14,10 @@
 -- BAGIAN 1 — Statement langsung (bisa dijalankan satu per satu di DBeaver)
 -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
--- 1) GOLD.DIM_TEAM
-TRUNCATE TABLE gold.fact_team_statistics;
-TRUNCATE TABLE gold.dim_team CASCADE;
+TRUNCATE TABLE gold.teams_statistics;
 
-INSERT INTO gold.dim_team (club)
-SELECT DISTINCT club
-FROM silver.teams_attacking
-ORDER BY club;
-
--- 2) GOLD.FACT_TEAM_STATISTICS
-INSERT INTO gold.fact_team_statistics (
-    team_id, played,
+INSERT INTO gold.teams_statistics (
+    club, played,
     -- attacking
     att_goals, att_xg, att_goals_vs_xg, att_shots, att_sot, att_conversion_pct, att_xg_per_shot,
     -- defending
@@ -56,7 +47,7 @@ INSERT INTO gold.fact_team_statistics (
     msc_fouls_per_game, msc_yellows_per_game
 )
 SELECT
-    d.team_id,
+    a.club,
     a.played,
     -- attacking
     a.goals, a.xg, a.goals_vs_xg, a.shots, a.sot, a.conversion_pct, a.xg_per_shot,
@@ -92,13 +83,12 @@ SELECT
     ROUND(s.direct_attacks_total::NUMERIC / a.played, 2),
     ROUND(m.fouls::NUMERIC   / a.played, 2),
     ROUND(m.yellows::NUMERIC / a.played, 2)
-FROM gold.dim_team d
-JOIN silver.teams_attacking  a  ON a.club  = d.club
-JOIN silver.teams_defending  df ON df.club = d.club
-JOIN silver.teams_passing    p  ON p.club  = d.club
-JOIN silver.teams_pressing   pr ON pr.club = d.club
-JOIN silver.teams_sequences  s  ON s.club  = d.club
-JOIN silver.teams_misc       m  ON m.club  = d.club;
+FROM silver.teams_attacking  a
+JOIN silver.teams_defending  df ON df.club = a.club
+JOIN silver.teams_passing    p  ON p.club  = a.club
+JOIN silver.teams_pressing   pr ON pr.club = a.club
+JOIN silver.teams_sequences  s  ON s.club  = a.club
+JOIN silver.teams_misc       m  ON m.club  = a.club;
 
 
 -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -109,21 +99,10 @@ CREATE OR REPLACE PROCEDURE gold.load_teams_gold()
 LANGUAGE plpgsql
 AS $$
 BEGIN
-    -- 1) Truncate (fact dulu karena FK)
-    TRUNCATE TABLE gold.fact_team_statistics;
-    TRUNCATE TABLE gold.dim_team CASCADE;
+    TRUNCATE TABLE gold.teams_statistics;
 
-    -- 2) Load dim_team
-    INSERT INTO gold.dim_team (club)
-    SELECT DISTINCT club
-    FROM silver.teams_attacking
-    ORDER BY club;
-
-    RAISE NOTICE 'gold.dim_team loaded';
-
-    -- 3) Load fact_team_statistics (+ derived per-game)
-    INSERT INTO gold.fact_team_statistics (
-        team_id, played,
+    INSERT INTO gold.teams_statistics (
+        club, played,
         att_goals, att_xg, att_goals_vs_xg, att_shots, att_sot, att_conversion_pct, att_xg_per_shot,
         def_avg_possession_pct, def_tackles, def_interceptions, def_possession_won,
         def_blocks, def_clearances, def_ground_duels_won_pct, def_aerial_duels_won_pct,
@@ -146,7 +125,7 @@ BEGIN
         msc_fouls_per_game, msc_yellows_per_game
     )
     SELECT
-        d.team_id,
+        a.club,
         a.played,
         a.goals, a.xg, a.goals_vs_xg, a.shots, a.sot, a.conversion_pct, a.xg_per_shot,
         df.avg_possession_pct, df.tackles, df.interceptions, df.possession_won,
@@ -175,15 +154,13 @@ BEGIN
         ROUND(s.direct_attacks_total::NUMERIC / a.played, 2),
         ROUND(m.fouls::NUMERIC   / a.played, 2),
         ROUND(m.yellows::NUMERIC / a.played, 2)
-    FROM gold.dim_team d
-    JOIN silver.teams_attacking  a  ON a.club  = d.club
-    JOIN silver.teams_defending  df ON df.club = d.club
-    JOIN silver.teams_passing    p  ON p.club  = d.club
-    JOIN silver.teams_pressing   pr ON pr.club = d.club
-    JOIN silver.teams_sequences  s  ON s.club  = d.club
-    JOIN silver.teams_misc       m  ON m.club  = d.club;
+    FROM silver.teams_attacking  a
+    JOIN silver.teams_defending  df ON df.club = a.club
+    JOIN silver.teams_passing    p  ON p.club  = a.club
+    JOIN silver.teams_pressing   pr ON pr.club = a.club
+    JOIN silver.teams_sequences  s  ON s.club  = a.club
+    JOIN silver.teams_misc       m  ON m.club  = a.club;
 
-    RAISE NOTICE 'gold.fact_team_statistics loaded (with derived per-game metrics)';
-    RAISE NOTICE 'Gold teams load complete';
+    RAISE NOTICE 'gold.teams_statistics loaded';
 END;
 $$;

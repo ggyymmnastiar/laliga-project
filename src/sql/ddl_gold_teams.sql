@@ -1,9 +1,8 @@
 -- ===========================================================================
--- Gold Layer — DDL Teams (Star Schema)
+-- Gold Layer — DDL Teams (One Big Table)
 -- ===========================================================================
--- dim_team              : Dimensi tim (Surrogate Key)
--- fact_team_statistics   : Fact table gabungan 6 kategori statistik
---                          + derived per-game metrics
+-- gold.teams_statistics : Satu tabel gabungan 6 kategori statistik tim
+--                         + derived per-game metrics
 --
 -- Jalankan script ini sekali untuk membuat struktur tabel.
 -- ===========================================================================
@@ -11,21 +10,12 @@
 CREATE SCHEMA IF NOT EXISTS gold;
 
 -- ---------------------------------------------------------------------------
--- DIMENSION: dim_team
+-- gold.teams_statistics
 -- ---------------------------------------------------------------------------
-DROP TABLE IF EXISTS gold.fact_team_statistics;
-DROP TABLE IF EXISTS gold.dim_team;
+DROP TABLE IF EXISTS gold.teams_statistics;
 
-CREATE TABLE gold.dim_team (
-    team_id     SERIAL         PRIMARY KEY,
-    club        VARCHAR(100)   NOT NULL UNIQUE
-);
-
--- ---------------------------------------------------------------------------
--- FACT: fact_team_statistics
--- ---------------------------------------------------------------------------
-CREATE TABLE gold.fact_team_statistics (
-    team_id                         INTEGER        NOT NULL REFERENCES gold.dim_team(team_id),
+CREATE TABLE gold.teams_statistics (
+    club                            VARCHAR(100)   NOT NULL PRIMARY KEY,
     played                          INTEGER        NOT NULL,
 
     -- ===== ATTACKING =====
@@ -109,7 +99,5 @@ CREATE TABLE gold.fact_team_statistics (
     seq_buildups_per_game           NUMERIC(5,2)   NOT NULL,
     seq_direct_attacks_per_game     NUMERIC(5,2)   NOT NULL,
     msc_fouls_per_game              NUMERIC(5,2)   NOT NULL,
-    msc_yellows_per_game            NUMERIC(5,2)   NOT NULL,
-
-    PRIMARY KEY (team_id)
+    msc_yellows_per_game            NUMERIC(5,2)   NOT NULL
 );

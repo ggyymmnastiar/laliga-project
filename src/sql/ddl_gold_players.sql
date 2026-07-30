@@ -1,9 +1,8 @@
 -- ===========================================================================
--- Gold Layer — DDL Players (Star Schema)
+-- Gold Layer — DDL Players (One Big Table)
 -- ===========================================================================
--- dim_player                : Dimensi pemain (Surrogate Key + FK ke dim_team)
--- fact_player_statistics    : Fact outfield (attacking + defending + passing + carrying)
--- fact_goalkeeper_statistics : Fact goalkeeper (terpisah karena beda populasi)
+-- gold.player_statistics     : OBT outfield (attacking + defending + passing + carrying)
+-- gold.goalkeeper_statistics  : OBT goalkeeper (terpisah karena beda populasi)
 --
 -- Jalankan script ini sekali untuk membuat struktur tabel.
 -- ===========================================================================
@@ -11,28 +10,17 @@
 CREATE SCHEMA IF NOT EXISTS gold;
 
 -- ---------------------------------------------------------------------------
--- DIMENSION: dim_player
--- ---------------------------------------------------------------------------
-DROP TABLE IF EXISTS gold.fact_player_statistics;
-DROP TABLE IF EXISTS gold.fact_goalkeeper_statistics;
-DROP TABLE IF EXISTS gold.dim_player;
-
-CREATE TABLE gold.dim_player (
-    player_id       SERIAL         PRIMARY KEY,
-    player_name     VARCHAR(150)   NOT NULL,
-    team_id         INTEGER        NOT NULL REFERENCES gold.dim_team(team_id),
-    UNIQUE (player_name, team_id)
-);
-
--- ---------------------------------------------------------------------------
--- FACT: fact_player_statistics (outfield — 323 pemain)
+-- gold.player_statistics (outfield — 323 pemain)
 -- ---------------------------------------------------------------------------
 -- Gabungan: attacking + defending + passing + carrying
--- JOIN via LEFT JOIN karena ada 1 pemain dengan inkonsistensi nama (aksen)
+-- Kolom stat NULLable karena ada 1 pemain (Javi Lopez/López) dengan
+-- inkonsistensi nama aksen antar tabel silver.
 -- ---------------------------------------------------------------------------
-CREATE TABLE gold.fact_player_statistics (
-    player_id                   INTEGER        NOT NULL REFERENCES gold.dim_player(player_id),
-    team_id                     INTEGER        NOT NULL REFERENCES gold.dim_team(team_id),
+DROP TABLE IF EXISTS gold.player_statistics;
+
+CREATE TABLE gold.player_statistics (
+    player_name                 VARCHAR(150)   NOT NULL,
+    club                        VARCHAR(100)   NOT NULL,
     apps                        INTEGER        NOT NULL,
     mins                        INTEGER        NOT NULL,
 
@@ -82,15 +70,17 @@ CREATE TABLE gold.fact_player_statistics (
     car_ended_with_chance       INTEGER,
     car_ended_with_assist       INTEGER,
 
-    PRIMARY KEY (player_id)
+    PRIMARY KEY (player_name, club)
 );
 
 -- ---------------------------------------------------------------------------
--- FACT: fact_goalkeeper_statistics (23 kiper)
+-- gold.goalkeeper_statistics (23 kiper)
 -- ---------------------------------------------------------------------------
-CREATE TABLE gold.fact_goalkeeper_statistics (
-    player_id               INTEGER        NOT NULL REFERENCES gold.dim_player(player_id),
-    team_id                 INTEGER        NOT NULL REFERENCES gold.dim_team(team_id),
+DROP TABLE IF EXISTS gold.goalkeeper_statistics;
+
+CREATE TABLE gold.goalkeeper_statistics (
+    player_name             VARCHAR(150)   NOT NULL,
+    club                    VARCHAR(100)   NOT NULL,
     apps                    INTEGER        NOT NULL,
     mins                    INTEGER        NOT NULL,
 
@@ -102,5 +92,5 @@ CREATE TABLE gold.fact_goalkeeper_statistics (
     gk_goals_prevented      NUMERIC(10,2)  NOT NULL,
     gk_gp_rate              NUMERIC(5,2)   NOT NULL,
 
-    PRIMARY KEY (player_id)
+    PRIMARY KEY (player_name, club)
 );
