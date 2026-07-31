@@ -37,8 +37,17 @@ PATHS = {
 # File Lists (tanpa ekstensi)
 # ---------------------------------------------------------------------------
 TEAM_FILES = [
-    "teams_attacking",
-    "teams_defending",
+    # Attacking (4 sub-kategori)
+    "teams_attacking_overall",
+    "teams_attacking_non_penalty",
+    "teams_attacking_set_pieces",
+    "teams_attacking_misc",
+    # Defending (4 sub-kategori)
+    "teams_defending_defensive_action",
+    "teams_defending_overall",
+    "teams_defending_set_piece",
+    "teams_defending_misc",
+    # Lainnya (tetap)
     "teams_passing",
     "teams_pressing",
     "teams_sequences",

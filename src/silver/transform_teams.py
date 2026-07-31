@@ -8,6 +8,8 @@ Dua tahap transformasi:
 Output:
   data/silver/teams/csv_raw/    ← CSV 0 (salinan mentah)
   data/silver/teams/csv_clean/  ← CSV 1 (sudah bersih)
+
+Tabel: 12 file (4 attacking, 4 defending, passing, pressing, sequences, misc)
 """
 
 import sys
@@ -28,20 +30,67 @@ logger = get_logger(__name__)
 # Cleaner functions (spesifik per tabel)
 # ===========================================================================
 
-def _clean_attacking(df: pd.DataFrame) -> pd.DataFrame:
-    """Bersihkan teams_attacking: konversi conversion_pct."""
+# ---- ATTACKING ----
+
+def _clean_attacking_overall(df: pd.DataFrame) -> pd.DataFrame:
+    """Bersihkan teams_attacking_overall: konversi conversion_pct."""
     df = df.copy()
     df["conversion_pct"] = strip_pct(df["conversion_pct"])
     return df
 
 
-def _clean_defending(df: pd.DataFrame) -> pd.DataFrame:
-    """Bersihkan teams_defending: konversi 3 kolom pct."""
+def _clean_attacking_non_penalty(df: pd.DataFrame) -> pd.DataFrame:
+    """Bersihkan teams_attacking_non_penalty: konversi conv_pct."""
+    df = df.copy()
+    df["conv_pct"] = strip_pct(df["conv_pct"])
+    return df
+
+
+def _clean_attacking_set_pieces(df: pd.DataFrame) -> pd.DataFrame:
+    """Bersihkan teams_attacking_set_pieces: konversi 3 kolom pct."""
+    df = df.copy()
+    for col in ["goal_pct", "shot_pct", "xg_pct"]:
+        df[col] = strip_pct(df[col])
+    return df
+
+
+def _clean_attacking_misc(df: pd.DataFrame) -> pd.DataFrame:
+    """teams_attacking_misc: semua kolom sudah integer, tidak perlu perubahan."""
+    return df.copy()
+
+
+# ---- DEFENDING ----
+
+def _clean_defending_defensive_action(df: pd.DataFrame) -> pd.DataFrame:
+    """Bersihkan teams_defending_defensive_action: konversi 3 kolom pct."""
     df = df.copy()
     for col in ["avg_possession_pct", "ground_duels_won_pct", "aerial_duels_won_pct"]:
         df[col] = strip_pct(df[col])
     return df
 
+
+def _clean_defending_overall(df: pd.DataFrame) -> pd.DataFrame:
+    """Bersihkan teams_defending_overall: konversi 3 kolom pct."""
+    df = df.copy()
+    for col in ["conv_pct", "shots_in_box_pct", "goals_in_box_pct"]:
+        df[col] = strip_pct(df[col])
+    return df
+
+
+def _clean_defending_set_piece(df: pd.DataFrame) -> pd.DataFrame:
+    """Bersihkan teams_defending_set_piece: konversi 3 kolom pct."""
+    df = df.copy()
+    for col in ["goal_pct", "shot_pct", "xg_pct"]:
+        df[col] = strip_pct(df[col])
+    return df
+
+
+def _clean_defending_misc(df: pd.DataFrame) -> pd.DataFrame:
+    """teams_defending_misc: semua kolom sudah integer, tidak perlu perubahan."""
+    return df.copy()
+
+
+# ---- LAINNYA (tetap) ----
 
 def _clean_passing(df: pd.DataFrame) -> pd.DataFrame:
     """Bersihkan teams_passing: konversi 8 kolom pct."""
@@ -80,8 +129,17 @@ def _clean_misc(df: pd.DataFrame) -> pd.DataFrame:
 
 # Mapping nama file → fungsi pembersihan
 CLEANERS = {
-    "teams_attacking": _clean_attacking,
-    "teams_defending": _clean_defending,
+    # Attacking
+    "teams_attacking_overall": _clean_attacking_overall,
+    "teams_attacking_non_penalty": _clean_attacking_non_penalty,
+    "teams_attacking_set_pieces": _clean_attacking_set_pieces,
+    "teams_attacking_misc": _clean_attacking_misc,
+    # Defending
+    "teams_defending_defensive_action": _clean_defending_defensive_action,
+    "teams_defending_overall": _clean_defending_overall,
+    "teams_defending_set_piece": _clean_defending_set_piece,
+    "teams_defending_misc": _clean_defending_misc,
+    # Lainnya
     "teams_passing": _clean_passing,
     "teams_pressing": _clean_pressing,
     "teams_sequences": _clean_sequences,

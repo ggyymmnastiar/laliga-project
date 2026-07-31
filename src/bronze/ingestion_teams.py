@@ -1,7 +1,7 @@
 """
 Bronze Layer — Ingestion Teams
 ================================
-Menyalin 6 file JSON dari datasets/teams/ (Source) ke data/bronze/teams/ (Bronze).
+Menyalin 12 file JSON dari datasets/teams/ (Source) ke data/bronze/teams/ (Bronze).
 Script ini idempotent — bisa dijalankan berulang kali tanpa efek samping.
 """
 

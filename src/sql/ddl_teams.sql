@@ -1,17 +1,24 @@
 -- ===========================================================================
 -- Silver Layer — DDL Teams
 -- ===========================================================================
--- Membuat 6 tabel di schema silver untuk data tim LaLiga.
+-- Membuat 12 tabel di schema silver untuk data tim LaLiga.
+-- Tabel dikelompokkan: 4 attacking, 4 defending, passing, pressing,
+--                       sequences, misc.
 -- Jalankan script ini sekali untuk membuat struktur tabel.
 -- ===========================================================================
 
 CREATE SCHEMA IF NOT EXISTS silver;
 
+
+-- ===========================================================================
+-- ATTACKING (4 tabel)
+-- ===========================================================================
+
 -- ---------------------------------------------------------------------------
--- 1. teams_attacking
+-- 1. teams_attacking_overall
 -- ---------------------------------------------------------------------------
-DROP TABLE IF EXISTS silver.teams_attacking;
-CREATE TABLE silver.teams_attacking (
+DROP TABLE IF EXISTS silver.teams_attacking_overall;
+CREATE TABLE silver.teams_attacking_overall (
     club                VARCHAR(100)   NOT NULL,
     played              INTEGER        NOT NULL,
     goals               INTEGER        NOT NULL,
@@ -25,10 +32,69 @@ CREATE TABLE silver.teams_attacking (
 );
 
 -- ---------------------------------------------------------------------------
--- 2. teams_defending
+-- 2. teams_attacking_non_penalty
 -- ---------------------------------------------------------------------------
-DROP TABLE IF EXISTS silver.teams_defending;
-CREATE TABLE silver.teams_defending (
+DROP TABLE IF EXISTS silver.teams_attacking_non_penalty;
+CREATE TABLE silver.teams_attacking_non_penalty (
+    club                VARCHAR(100)   NOT NULL,
+    played              INTEGER        NOT NULL,
+    goals               INTEGER        NOT NULL,
+    xg                  NUMERIC(10,2)  NOT NULL,
+    goals_vs_xg         NUMERIC(10,2)  NOT NULL,
+    shots               INTEGER        NOT NULL,
+    sot                 INTEGER        NOT NULL,
+    conv_pct            NUMERIC(5,2)   NOT NULL,
+    xg_per_shot         NUMERIC(5,2)   NOT NULL,
+    PRIMARY KEY (club)
+);
+
+-- ---------------------------------------------------------------------------
+-- 3. teams_attacking_set_pieces
+-- ---------------------------------------------------------------------------
+DROP TABLE IF EXISTS silver.teams_attacking_set_pieces;
+CREATE TABLE silver.teams_attacking_set_pieces (
+    club                VARCHAR(100)   NOT NULL,
+    played              INTEGER        NOT NULL,
+    goals               INTEGER        NOT NULL,
+    shots               INTEGER        NOT NULL,
+    xg                  NUMERIC(10,2)  NOT NULL,
+    goal_pct            NUMERIC(5,2)   NOT NULL,
+    shot_pct            NUMERIC(5,2)   NOT NULL,
+    xg_pct              NUMERIC(5,2)   NOT NULL,
+    PRIMARY KEY (club)
+);
+
+-- ---------------------------------------------------------------------------
+-- 4. teams_attacking_misc
+-- ---------------------------------------------------------------------------
+DROP TABLE IF EXISTS silver.teams_attacking_misc;
+CREATE TABLE silver.teams_attacking_misc (
+    club                VARCHAR(100)   NOT NULL,
+    played              INTEGER        NOT NULL,
+    touches_in_box      INTEGER        NOT NULL,
+    hit_woodwork        INTEGER        NOT NULL,
+    offsides            INTEGER        NOT NULL,
+    penalties_total     INTEGER        NOT NULL,
+    penalties_goals     INTEGER        NOT NULL,
+    free_kicks_total    INTEGER        NOT NULL,
+    free_kicks_goals    INTEGER        NOT NULL,
+    headers_total       INTEGER        NOT NULL,
+    headers_goals       INTEGER        NOT NULL,
+    fast_breaks_total   INTEGER        NOT NULL,
+    fast_breaks_goals   INTEGER        NOT NULL,
+    PRIMARY KEY (club)
+);
+
+
+-- ===========================================================================
+-- DEFENDING (4 tabel)
+-- ===========================================================================
+
+-- ---------------------------------------------------------------------------
+-- 5. teams_defending_defensive_action
+-- ---------------------------------------------------------------------------
+DROP TABLE IF EXISTS silver.teams_defending_defensive_action;
+CREATE TABLE silver.teams_defending_defensive_action (
     club                    VARCHAR(100)   NOT NULL,
     played                  INTEGER        NOT NULL,
     avg_possession_pct      NUMERIC(5,2)   NOT NULL,
@@ -43,7 +109,68 @@ CREATE TABLE silver.teams_defending (
 );
 
 -- ---------------------------------------------------------------------------
--- 3. teams_passing
+-- 6. teams_defending_overall
+-- ---------------------------------------------------------------------------
+DROP TABLE IF EXISTS silver.teams_defending_overall;
+CREATE TABLE silver.teams_defending_overall (
+    club                VARCHAR(100)   NOT NULL,
+    played              INTEGER        NOT NULL,
+    goals               INTEGER        NOT NULL,
+    xg                  NUMERIC(10,2)  NOT NULL,
+    goals_vs_xg         NUMERIC(10,2)  NOT NULL,
+    shots               INTEGER        NOT NULL,
+    sot                 INTEGER        NOT NULL,
+    conv_pct            NUMERIC(5,2)   NOT NULL,
+    xg_per_shot         NUMERIC(5,2)   NOT NULL,
+    shots_in_box_pct    NUMERIC(5,2)   NOT NULL,
+    goals_in_box_pct    NUMERIC(5,2)   NOT NULL,
+    PRIMARY KEY (club)
+);
+
+-- ---------------------------------------------------------------------------
+-- 7. teams_defending_set_piece
+-- ---------------------------------------------------------------------------
+DROP TABLE IF EXISTS silver.teams_defending_set_piece;
+CREATE TABLE silver.teams_defending_set_piece (
+    club                VARCHAR(100)   NOT NULL,
+    played              INTEGER        NOT NULL,
+    goals               INTEGER        NOT NULL,
+    shots               INTEGER        NOT NULL,
+    xg                  NUMERIC(10,2)  NOT NULL,
+    goal_pct            NUMERIC(5,2)   NOT NULL,
+    shot_pct            NUMERIC(5,2)   NOT NULL,
+    xg_pct              NUMERIC(5,2)   NOT NULL,
+    PRIMARY KEY (club)
+);
+
+-- ---------------------------------------------------------------------------
+-- 8. teams_defending_misc
+-- ---------------------------------------------------------------------------
+DROP TABLE IF EXISTS silver.teams_defending_misc;
+CREATE TABLE silver.teams_defending_misc (
+    club                VARCHAR(100)   NOT NULL,
+    played              INTEGER        NOT NULL,
+    touches_in_box      INTEGER        NOT NULL,
+    hit_woodwork        INTEGER        NOT NULL,
+    offsides            INTEGER        NOT NULL,
+    penalties_total     INTEGER        NOT NULL,
+    penalties_goals     INTEGER        NOT NULL,
+    free_kicks_total    INTEGER        NOT NULL,
+    free_kicks_goals    INTEGER        NOT NULL,
+    headers_total       INTEGER        NOT NULL,
+    headers_goals       INTEGER        NOT NULL,
+    fast_breaks_total   INTEGER        NOT NULL,
+    fast_breaks_goals   INTEGER        NOT NULL,
+    PRIMARY KEY (club)
+);
+
+
+-- ===========================================================================
+-- LAINNYA (4 tabel — tidak berubah)
+-- ===========================================================================
+
+-- ---------------------------------------------------------------------------
+-- 9. teams_passing
 -- ---------------------------------------------------------------------------
 DROP TABLE IF EXISTS silver.teams_passing;
 CREATE TABLE silver.teams_passing (
@@ -68,7 +195,7 @@ CREATE TABLE silver.teams_passing (
 );
 
 -- ---------------------------------------------------------------------------
--- 4. teams_pressing
+-- 10. teams_pressing
 -- ---------------------------------------------------------------------------
 DROP TABLE IF EXISTS silver.teams_pressing;
 CREATE TABLE silver.teams_pressing (
@@ -85,7 +212,7 @@ CREATE TABLE silver.teams_pressing (
 );
 
 -- ---------------------------------------------------------------------------
--- 5. teams_sequences
+-- 11. teams_sequences
 -- ---------------------------------------------------------------------------
 DROP TABLE IF EXISTS silver.teams_sequences;
 CREATE TABLE silver.teams_sequences (
@@ -103,7 +230,7 @@ CREATE TABLE silver.teams_sequences (
 );
 
 -- ---------------------------------------------------------------------------
--- 6. teams_misc
+-- 12. teams_misc
 -- ---------------------------------------------------------------------------
 DROP TABLE IF EXISTS silver.teams_misc;
 CREATE TABLE silver.teams_misc (

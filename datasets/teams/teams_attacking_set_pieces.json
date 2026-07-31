@@ -1,0 +1,202 @@
+[
+    {
+        "club": "Real Madrid",
+        "played": 38,
+        "goals": 13,
+        "shots": 175,
+        "xg": 14.75,
+        "goal_pct": "16.88%",
+        "shot_pct": "26.32%",
+        "xg_pct": "18.91%"
+    },
+    {
+        "club": "Espanyol",
+        "played": 38,
+        "goals": 14,
+        "shots": 170,
+        "xg": 14.39,
+        "goal_pct": "32.56%",
+        "shot_pct": "35.42%",
+        "xg_pct": "29.40%"
+    },
+    {
+        "club": "Levante",
+        "played": 38,
+        "goals": 16,
+        "shots": 162,
+        "xg": 13.82,
+        "goal_pct": "34.04%",
+        "shot_pct": "34.03%",
+        "xg_pct": "26.19%"
+    },
+    {
+        "club": "Real Sociedad",
+        "played": 38,
+        "goals": 9,
+        "shots": 148,
+        "xg": 12.04,
+        "goal_pct": "15.25%",
+        "shot_pct": "31.56%",
+        "xg_pct": "22.12%"
+    },
+    {
+        "club": "Osasuna",
+        "played": 38,
+        "goals": 15,
+        "shots": 144,
+        "xg": 12.04,
+        "goal_pct": "34.09%",
+        "shot_pct": "32.00%",
+        "xg_pct": "26.21%"
+    },
+    {
+        "club": "Barcelona",
+        "played": 38,
+        "goals": 15,
+        "shots": 155,
+        "xg": 11.48,
+        "goal_pct": "15.79%",
+        "shot_pct": "22.40%",
+        "xg_pct": "13.25%"
+    },
+    {
+        "club": "Alaves",
+        "played": 38,
+        "goals": 11,
+        "shots": 135,
+        "xg": 11.00,
+        "goal_pct": "25.00%",
+        "shot_pct": "29.16%",
+        "xg_pct": "23.37%"
+    },
+    {
+        "club": "Atlético Madrid",
+        "played": 38,
+        "goals": 12,
+        "shots": 132,
+        "xg": 11.00,
+        "goal_pct": "19.35%",
+        "shot_pct": "26.51%",
+        "xg_pct": "18.68%"
+    },
+    {
+        "club": "Athletic Bilbao",
+        "played": 38,
+        "goals": 6,
+        "shots": 139,
+        "xg": 10.55,
+        "goal_pct": "13.95%",
+        "shot_pct": "26.63%",
+        "xg_pct": "20.85%"
+    },
+    {
+        "club": "Rayo Vallecano",
+        "played": 38,
+        "goals": 7,
+        "shots": 147,
+        "xg": 9.75,
+        "goal_pct": "17.07%",
+        "shot_pct": "27.68%",
+        "xg_pct": "18.34%"
+    },
+    {
+        "club": "Valencia",
+        "played": 38,
+        "goals": 10,
+        "shots": 129,
+        "xg": 9.58,
+        "goal_pct": "21.74%",
+        "shot_pct": "28.73%",
+        "xg_pct": "19.47%"
+    },
+    {
+        "club": "Real Oviedo",
+        "played": 38,
+        "goals": 10,
+        "shots": 111,
+        "xg": 9.57,
+        "goal_pct": "38.46%",
+        "shot_pct": "29.52%",
+        "xg_pct": "26.69%"
+    },
+    {
+        "club": "Real Betis",
+        "played": 38,
+        "goals": 9,
+        "shots": 123,
+        "xg": 9.47,
+        "goal_pct": "15.25%",
+        "shot_pct": "22.74%",
+        "xg_pct": "17.01%"
+    },
+    {
+        "club": "Girona",
+        "played": 38,
+        "goals": 6,
+        "shots": 98,
+        "xg": 8.93,
+        "goal_pct": "15.38%",
+        "shot_pct": "23.06%",
+        "xg_pct": "18.52%"
+    },
+    {
+        "club": "Getafe",
+        "played": 38,
+        "goals": 12,
+        "shots": 152,
+        "xg": 8.89,
+        "goal_pct": "37.50%",
+        "shot_pct": "43.18%",
+        "xg_pct": "29.07%"
+    },
+    {
+        "club": "Villarreal",
+        "played": 38,
+        "goals": 7,
+        "shots": 103,
+        "xg": 7.81,
+        "goal_pct": "9.72%",
+        "shot_pct": "22.64%",
+        "xg_pct": "13.22%"
+    },
+    {
+        "club": "Mallorca",
+        "played": 38,
+        "goals": 8,
+        "shots": 112,
+        "xg": 7.73,
+        "goal_pct": "17.02%",
+        "shot_pct": "27.12%",
+        "xg_pct": "17.77%"
+    },
+    {
+        "club": "Sevilla",
+        "played": 38,
+        "goals": 5,
+        "shots": 121,
+        "xg": 6.59,
+        "goal_pct": "10.87%",
+        "shot_pct": "27.69%",
+        "xg_pct": "16.77%"
+    },
+    {
+        "club": "Celta Vigo",
+        "played": 38,
+        "goals": 7,
+        "shots": 78,
+        "xg": 6.27,
+        "goal_pct": "13.21%",
+        "shot_pct": "20.42%",
+        "xg_pct": "12.65%"
+    },
+    {
+        "club": "Elche",
+        "played": 38,
+        "goals": 7,
+        "shots": 93,
+        "xg": 5.81,
+        "goal_pct": "14.29%",
+        "shot_pct": "22.68%",
+        "xg_pct": "13.64%"
+    }
+]

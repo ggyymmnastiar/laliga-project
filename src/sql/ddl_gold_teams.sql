@@ -1,7 +1,7 @@
 -- ===========================================================================
 -- Gold Layer — DDL Teams (One Big Table)
 -- ===========================================================================
--- gold.teams_statistics : Satu tabel gabungan 6 kategori statistik tim
+-- gold.teams_statistics : Satu tabel gabungan 12 kategori statistik tim
 --                         + derived per-game metrics
 --
 -- Jalankan script ini sekali untuk membuat struktur tabel.
@@ -18,7 +18,7 @@ CREATE TABLE gold.teams_statistics (
     club                            VARCHAR(100)   NOT NULL PRIMARY KEY,
     played                          INTEGER        NOT NULL,
 
-    -- ===== ATTACKING =====
+    -- ===== ATTACKING OVERALL =====
     att_goals                       INTEGER        NOT NULL,
     att_xg                          NUMERIC(10,2)  NOT NULL,
     att_goals_vs_xg                 NUMERIC(10,2)  NOT NULL,
@@ -27,7 +27,37 @@ CREATE TABLE gold.teams_statistics (
     att_conversion_pct              NUMERIC(5,2)   NOT NULL,
     att_xg_per_shot                 NUMERIC(5,2)   NOT NULL,
 
-    -- ===== DEFENDING =====
+    -- ===== ATTACKING NON-PENALTY =====
+    att_np_goals                    INTEGER        NOT NULL,
+    att_np_xg                       NUMERIC(10,2)  NOT NULL,
+    att_np_goals_vs_xg              NUMERIC(10,2)  NOT NULL,
+    att_np_shots                    INTEGER        NOT NULL,
+    att_np_sot                      INTEGER        NOT NULL,
+    att_np_conv_pct                 NUMERIC(5,2)   NOT NULL,
+    att_np_xg_per_shot              NUMERIC(5,2)   NOT NULL,
+
+    -- ===== ATTACKING SET-PIECES =====
+    att_sp_goals                    INTEGER        NOT NULL,
+    att_sp_shots                    INTEGER        NOT NULL,
+    att_sp_xg                       NUMERIC(10,2)  NOT NULL,
+    att_sp_goal_pct                 NUMERIC(5,2)   NOT NULL,
+    att_sp_shot_pct                 NUMERIC(5,2)   NOT NULL,
+    att_sp_xg_pct                   NUMERIC(5,2)   NOT NULL,
+
+    -- ===== ATTACKING MISC =====
+    att_touches_in_box              INTEGER        NOT NULL,
+    att_hit_woodwork                INTEGER        NOT NULL,
+    att_offsides                    INTEGER        NOT NULL,
+    att_penalties_total             INTEGER        NOT NULL,
+    att_penalties_goals             INTEGER        NOT NULL,
+    att_free_kicks_total            INTEGER        NOT NULL,
+    att_free_kicks_goals            INTEGER        NOT NULL,
+    att_headers_total               INTEGER        NOT NULL,
+    att_headers_goals               INTEGER        NOT NULL,
+    att_fast_breaks_total           INTEGER        NOT NULL,
+    att_fast_breaks_goals           INTEGER        NOT NULL,
+
+    -- ===== DEFENDING DEFENSIVE ACTION =====
     def_avg_possession_pct          NUMERIC(5,2)   NOT NULL,
     def_tackles                     INTEGER        NOT NULL,
     def_interceptions               INTEGER        NOT NULL,
@@ -36,6 +66,38 @@ CREATE TABLE gold.teams_statistics (
     def_clearances                  INTEGER        NOT NULL,
     def_ground_duels_won_pct        NUMERIC(5,2)   NOT NULL,
     def_aerial_duels_won_pct        NUMERIC(5,2)   NOT NULL,
+
+    -- ===== DEFENDING OVERALL =====
+    def_goals_conceded              INTEGER        NOT NULL,
+    def_xg_against                  NUMERIC(10,2)  NOT NULL,
+    def_goals_vs_xg_against         NUMERIC(10,2)  NOT NULL,
+    def_shots_against               INTEGER        NOT NULL,
+    def_sot_against                 INTEGER        NOT NULL,
+    def_conv_pct_against            NUMERIC(5,2)   NOT NULL,
+    def_xg_per_shot_against         NUMERIC(5,2)   NOT NULL,
+    def_shots_in_box_pct            NUMERIC(5,2)   NOT NULL,
+    def_goals_in_box_pct            NUMERIC(5,2)   NOT NULL,
+
+    -- ===== DEFENDING SET-PIECE =====
+    def_sp_goals                    INTEGER        NOT NULL,
+    def_sp_shots                    INTEGER        NOT NULL,
+    def_sp_xg                       NUMERIC(10,2)  NOT NULL,
+    def_sp_goal_pct                 NUMERIC(5,2)   NOT NULL,
+    def_sp_shot_pct                 NUMERIC(5,2)   NOT NULL,
+    def_sp_xg_pct                   NUMERIC(5,2)   NOT NULL,
+
+    -- ===== DEFENDING MISC =====
+    def_touches_in_box              INTEGER        NOT NULL,
+    def_hit_woodwork                INTEGER        NOT NULL,
+    def_offsides                    INTEGER        NOT NULL,
+    def_penalties_total             INTEGER        NOT NULL,
+    def_penalties_goals             INTEGER        NOT NULL,
+    def_free_kicks_total            INTEGER        NOT NULL,
+    def_free_kicks_goals            INTEGER        NOT NULL,
+    def_headers_total               INTEGER        NOT NULL,
+    def_headers_goals               INTEGER        NOT NULL,
+    def_fast_breaks_total           INTEGER        NOT NULL,
+    def_fast_breaks_goals           INTEGER        NOT NULL,
 
     -- ===== PASSING =====
     pas_passes_total                INTEGER        NOT NULL,
@@ -90,8 +152,11 @@ CREATE TABLE gold.teams_statistics (
     att_goals_per_game              NUMERIC(5,2)   NOT NULL,
     att_shots_per_game              NUMERIC(5,2)   NOT NULL,
     att_xg_per_game                 NUMERIC(5,2)   NOT NULL,
+    att_fast_breaks_per_game        NUMERIC(5,2)   NOT NULL,
+    att_touches_in_box_per_game     NUMERIC(5,2)   NOT NULL,
     def_tackles_per_game            NUMERIC(5,2)   NOT NULL,
     def_interceptions_per_game      NUMERIC(5,2)   NOT NULL,
+    def_goals_conceded_per_game     NUMERIC(5,2)   NOT NULL,
     pas_passes_per_game             NUMERIC(7,2)   NOT NULL,
     pas_crosses_per_game            NUMERIC(5,2)   NOT NULL,
     pas_through_balls_per_game      NUMERIC(5,2)   NOT NULL,
