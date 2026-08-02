@@ -1,16 +1,43 @@
 """
-Config — Path & File Registry
+Config — Path, File Registry & Database
 ================================
-Satu tempat untuk semua path dan daftar file proyek.
+Satu tempat untuk semua path, daftar file, dan koneksi database proyek.
 Digunakan oleh semua script di src/ agar tidak ada hardcode tersebar.
+
+Credential database dibaca dari file .env di root project.
 """
 
+import os
 from pathlib import Path
+
+from dotenv import load_dotenv
 
 # ---------------------------------------------------------------------------
 # Base Directory (root project)
 # ---------------------------------------------------------------------------
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# ---------------------------------------------------------------------------
+# Load .env
+# ---------------------------------------------------------------------------
+load_dotenv(BASE_DIR / ".env")
+
+# ---------------------------------------------------------------------------
+# Database
+# ---------------------------------------------------------------------------
+DB_CONFIG = {
+    "host": os.getenv("DB_HOST", "localhost"),
+    "port": int(os.getenv("DB_PORT", "5432")),
+    "dbname": os.getenv("DB_NAME", "laliga"),
+    "user": os.getenv("DB_USER", "g"),
+    "password": os.getenv("DB_PASSWORD", ""),
+}
+
+# SQLAlchemy connection string
+DB_URL = (
+    f"postgresql://{DB_CONFIG['user']}:{DB_CONFIG['password']}"
+    f"@{DB_CONFIG['host']}:{DB_CONFIG['port']}/{DB_CONFIG['dbname']}"
+)
 
 # ---------------------------------------------------------------------------
 # Paths
@@ -31,6 +58,9 @@ PATHS = {
     # Silver — Players
     "silver_players_raw": BASE_DIR / "data" / "silver" / "players" / "csv_raw",
     "silver_players_clean": BASE_DIR / "data" / "silver" / "players" / "csv_clean",
+
+    # SQL scripts
+    "sql_dir": BASE_DIR / "src" / "sql",
 }
 
 # ---------------------------------------------------------------------------

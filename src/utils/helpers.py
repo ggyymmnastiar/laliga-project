@@ -156,3 +156,83 @@ def transform_csvs(
         logger.info("✅  %s (raw)  →  %s (clean)  (%d rows, %d cols)", src.name, dst.name, len(df), len(df.columns))
 
     logger.info("Step 2 selesai.\n")
+
+
+# ---------------------------------------------------------------------------
+# Database — PostgreSQL
+# ---------------------------------------------------------------------------
+
+def get_connection():
+    """Buat koneksi psycopg2 ke PostgreSQL menggunakan config dari .env.
+
+    Returns:
+        psycopg2 connection object (auto-commit OFF).
+    """
+    import psycopg2
+    from config.config import DB_CONFIG
+
+    return psycopg2.connect(**DB_CONFIG)
+
+
+def get_engine():
+    """Buat SQLAlchemy engine ke PostgreSQL.
+
+    Returns:
+        sqlalchemy.Engine — untuk pd.read_sql(), df.to_sql(), dll.
+    """
+    from sqlalchemy import create_engine
+    from config.config import DB_URL
+
+    return create_engine(DB_URL)
+
+
+def execute_sql_file(filepath: str | Path, *, autocommit: bool = True) -> None:
+    """Baca dan eksekusi seluruh isi file .sql terhadap PostgreSQL.
+
+    Args:
+        filepath: Path ke file .sql.
+        autocommit: Jika True, setiap statement langsung di-commit.
+    """
+    logger = get_logger(__name__)
+    filepath = Path(filepath)
+
+    if not filepath.exists():
+        logger.error("SQL file tidak ditemukan: %s", filepath)
+        raise FileNotFoundError(filepath)
+
+    sql = filepath.read_text(encoding="utf-8")
+    conn = get_connection()
+
+    try:
+        conn.autocommit = autocommit
+        with conn.cursor() as cur:
+            cur.execute(sql)
+        logger.info("✅  Executed: %s", filepath.name)
+    except Exception as e:
+        logger.error("❌  Error executing %s: %s", filepath.name, e)
+        raise
+    finally:
+        conn.close()
+
+
+def execute_sql(sql: str, *, autocommit: bool = True) -> None:
+    """Eksekusi SQL string langsung terhadap PostgreSQL.
+
+    Args:
+        sql: SQL statement(s) untuk dieksekusi.
+        autocommit: Jika True, langsung di-commit.
+    """
+    logger = get_logger(__name__)
+    conn = get_connection()
+
+    try:
+        conn.autocommit = autocommit
+        with conn.cursor() as cur:
+            cur.execute(sql)
+        logger.info("✅  SQL executed successfully")
+    except Exception as e:
+        logger.error("❌  SQL error: %s", e)
+        raise
+    finally:
+        conn.close()
+
