@@ -1,0 +1,6 @@
+# Pyrefly Type Checker & Linter Configuration
+search_path = [
+    ".",
+    "src",
+    "config"
+]
