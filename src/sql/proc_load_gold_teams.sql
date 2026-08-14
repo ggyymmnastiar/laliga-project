@@ -152,6 +152,95 @@ $$;
 
 
 -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-- PROCEDURE — gold.teams_ml_features (52 ML features)
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-- Subset 52 kolom untuk ML Clustering.
+-- JOIN langsung dari silver layer (bukan dari OBT).
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+CREATE OR REPLACE PROCEDURE gold.load_teams_ml_features()
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    TRUNCATE TABLE gold.teams_ml_features;
+
+    INSERT INTO gold.teams_ml_features (
+        club,
+        -- attacking overall (7)
+        att_goals, att_xg, att_goals_vs_xg,
+        att_shots, att_sot, att_conversion_pct, att_xg_per_shot,
+        -- attacking non-penalty (3)
+        att_np_goals, att_np_xg, att_np_goals_vs_xg,
+        -- attacking set-pieces (4)
+        att_sp_goals, att_sp_xg, att_sp_goal_pct, att_sp_shot_pct,
+        -- attacking misc (3)
+        att_touches_in_box, att_fast_breaks_total, att_fast_breaks_goals,
+        -- defending action (6)
+        def_tackles, def_interceptions, def_possession_won,
+        def_blocks, def_clearances, def_avg_possession_pct,
+        -- defending overall (5)
+        def_goals_conceded, def_xg_against, def_goals_vs_xg_against,
+        def_shots_against, def_shots_in_box_pct,
+        -- passing (6)
+        pas_passes_total, pas_passes_successful, pas_passes_pct,
+        pas_final_third_pct, pas_direction_fwd_pct, pas_through_balls,
+        -- pressing (6)
+        prs_ppda, prs_pressed_seqs, prs_high_turnovers_total,
+        prs_high_turnovers_shot_ending, prs_high_turnovers_goal_ending,
+        prs_high_turnovers_shot_pct,
+        -- sequences (6)
+        seq_direct_speed, seq_passes_per_seq, seq_sequence_time,
+        seq_buildups_total, seq_direct_attacks_total, seq_direct_attacks_goals,
+        -- misc / discipline (6)
+        msc_fouls, msc_yellows, msc_reds,
+        msc_errors_lead_to_shot, msc_errors_lead_to_goal, msc_pens_conceded
+    )
+    SELECT
+        a.club,
+        -- attacking overall
+        a.goals, a.xg, a.goals_vs_xg,
+        a.shots, a.sot, a.conversion_pct, a.xg_per_shot,
+        -- attacking non-penalty
+        anp.goals, anp.xg, anp.goals_vs_xg,
+        -- attacking set-pieces
+        asp.goals, asp.xg, asp.goal_pct, asp.shot_pct,
+        -- attacking misc
+        am.touches_in_box, am.fast_breaks_total, am.fast_breaks_goals,
+        -- defending action
+        dda.tackles, dda.interceptions, dda.possession_won,
+        dda.blocks, dda.clearances, dda.avg_possession_pct,
+        -- defending overall
+        do2.goals, do2.xg, do2.goals_vs_xg,
+        do2.shots, do2.shots_in_box_pct,
+        -- passing
+        p.passes_total, p.passes_successful, p.passes_pct,
+        p.final_third_pct, p.direction_fwd_pct, p.through_balls,
+        -- pressing
+        pr.ppda, pr.pressed_seqs, pr.high_turnovers_total,
+        pr.high_turnovers_shot_ending, pr.high_turnovers_goal_ending, pr.high_turnovers_shot_pct,
+        -- sequences
+        s.direct_speed, s.passes_per_seq, s.sequence_time,
+        s.buildups_total, s.direct_attacks_total, s.direct_attacks_goals,
+        -- misc / discipline
+        m.fouls, m.yellows, m.reds,
+        m.errors_lead_to_shot, m.errors_lead_to_goal, m.pens_conceded
+    FROM silver.teams_attacking_overall            a
+    JOIN silver.teams_attacking_non_penalty         anp ON anp.club = a.club
+    JOIN silver.teams_attacking_set_pieces          asp ON asp.club = a.club
+    JOIN silver.teams_attacking_misc                am  ON am.club  = a.club
+    JOIN silver.teams_defending_defensive_action    dda ON dda.club = a.club
+    JOIN silver.teams_defending_overall             do2 ON do2.club = a.club
+    JOIN silver.teams_passing                       p   ON p.club   = a.club
+    JOIN silver.teams_pressing                      pr  ON pr.club  = a.club
+    JOIN silver.teams_sequences                     s   ON s.club   = a.club
+    JOIN silver.teams_misc                          m   ON m.club   = a.club;
+
+    RAISE NOTICE 'gold.teams_ml_features loaded (10 silver tables joined, 52 features)';
+END;
+$$;
+
+
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -- REFERENSI DBEAVER — Statement manual (opsional, untuk test/debug)
 -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -173,3 +262,5 @@ $$;
 --
 -- Atau cukup panggil:
 -- CALL gold.load_teams_gold();
+-- CALL gold.load_teams_ml_features();
+
