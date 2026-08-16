@@ -1,7 +1,8 @@
-requests==2.32.3
-pandas==2.2.2
-boto3==1.34.120
-streamlit==1.35.0
-plotly==5.22.0
-scikit-learn==1.5.0
-great-expectations==0.18.15
+streamlit
+pandas
+numpy
+plotly
+scikit-learn
+matplotlib
+seaborn
+plotly
