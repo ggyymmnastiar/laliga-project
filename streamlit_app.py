@@ -416,38 +416,6 @@ elif page == "Cluster Analysis":
 
     st.markdown("---")
 
-    # ── Correlation Matrix Heatmap ──
-    st.subheader("Feature Correlation Analysis")
-    st.caption("Pearson Correlation between 9 Playing Style Scores")
-    
-    corr_matrix = scores[SCORE_COLS].corr()
-    heatmap_labels_corr = [SCORE_LABELS[c] for c in SCORE_COLS]
-    z_vals_corr = corr_matrix.values
-    z_text_corr = [[f"{v:.2f}" for v in row] for row in z_vals_corr]
-    
-    fig_corr = go.Figure(go.Heatmap(
-        z=z_vals_corr,
-        x=heatmap_labels_corr,
-        y=heatmap_labels_corr,
-        text=z_text_corr,
-        texttemplate="%{text}",
-        textfont=dict(size=11),
-        colorscale="RdBu",
-        zmid=0,
-        hovertemplate="<b>%{y} & %{x}</b><br>Correlation: %{z:.2f}<extra></extra>",
-    ))
-    
-    fig_corr.update_layout(
-        **CHART_LAYOUT,
-        margin=dict(l=140, r=20, t=20, b=100),
-        height=650,
-        xaxis=dict(tickangle=-45, tickfont=dict(size=11), side="bottom"),
-        yaxis=dict(tickfont=dict(size=11), autorange="reversed", automargin=True),
-    )
-    st.plotly_chart(fig_corr, use_container_width=True)
-
-    st.markdown("---")
-
     # ── PCA Scatter Plot (full width) ──
     st.subheader("Cluster Visualization (PCA)")
 
@@ -504,6 +472,38 @@ elif page == "Cluster Analysis":
         ),
     )
     st.plotly_chart(fig_pca, use_container_width=True)
+
+    st.markdown("---")
+
+    # ── Correlation Matrix Heatmap ──
+    st.subheader("Feature Correlation Analysis")
+    st.caption("Pearson Correlation between 9 Playing Style Scores")
+    
+    corr_matrix = scores[SCORE_COLS].corr()
+    heatmap_labels_corr = [SCORE_LABELS[c] for c in SCORE_COLS]
+    z_vals_corr = corr_matrix.values
+    z_text_corr = [[f"{v:.2f}" for v in row] for row in z_vals_corr]
+    
+    fig_corr = go.Figure(go.Heatmap(
+        z=z_vals_corr,
+        x=heatmap_labels_corr,
+        y=heatmap_labels_corr,
+        text=z_text_corr,
+        texttemplate="%{text}",
+        textfont=dict(size=11),
+        colorscale="RdBu",
+        zmid=0,
+        hovertemplate="<b>%{y} & %{x}</b><br>Correlation: %{z:.2f}<extra></extra>",
+    ))
+    
+    fig_corr.update_layout(
+        **CHART_LAYOUT,
+        margin=dict(l=140, r=20, t=20, b=100),
+        height=650,
+        xaxis=dict(tickangle=-45, tickfont=dict(size=11), side="bottom"),
+        yaxis=dict(tickfont=dict(size=11), autorange="reversed", automargin=True),
+    )
+    st.plotly_chart(fig_corr, use_container_width=True)
 
     st.markdown("---")
 
