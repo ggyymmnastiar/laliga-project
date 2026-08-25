@@ -294,7 +294,7 @@ CLEANERS = {
 
 def run_transform_teams() -> None:
     """Jalankan seluruh pipeline Silver untuk teams."""
-    logger.info("=== SILVER TRANSFORM: Teams ===\n")
+    logger.info("  ┌─ Silver Transform: Teams")
 
     # Step 1: JSON → CSV raw
     json_to_csv(

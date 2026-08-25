@@ -46,13 +46,14 @@ def export_gold_csv() -> None:
     engine = get_engine()
 
     for table_name, filename in GOLD_TABLES.items():
-        logger.info("Exporting %s → %s", table_name, filename)
+        logger.info("    ├─ Exporting %s", table_name)
         df = pd.read_sql(f"SELECT * FROM {table_name} ORDER BY club", engine)
         output_path = output_dir / filename
         df.to_csv(output_path, index=False)
-        logger.info("  ✅ %s rows × %s cols → %s", df.shape[0], df.shape[1], filename)
+        size_kb = round(output_path.stat().st_size / 1024, 1)
+        logger.info("    │  └─ %s rows × %s cols  →  %s  (%s KB)", df.shape[0], df.shape[1], filename, size_kb)
 
-    logger.info("CSV export selesai → %s ✅\n", output_dir)
+    logger.info("    └─ Local CSV (gold) → %s", output_dir)
 
 
 # ---------------------------------------------------------------------------
@@ -63,7 +64,7 @@ def load_gold_teams() -> None:
     """Jalankan DDL + load procedure untuk gold teams."""
     sql_dir = PATHS["sql_dir"]
 
-    logger.info("=== DB LOAD: Gold Teams ===")
+    logger.info("  ┌─ DB Load: Gold Teams")
 
     # 1. DDL — buat/replace tabel (teams_statistics + teams_ml_features)
     execute_sql_file(sql_dir / "ddl_gold_teams.sql")
@@ -77,7 +78,7 @@ def load_gold_teams() -> None:
     # 4. CALL procedure — ML Features (TRUNCATE + INSERT ... SELECT)
     execute_sql("CALL gold.load_teams_ml_features()")
 
-    logger.info("Gold teams → PostgreSQL selesai ✅\n")
+    logger.info("  └─ Gold teams → PostgreSQL done")
 
     # 5. Export ke CSV
     export_gold_csv()
@@ -87,13 +88,13 @@ def load_gold_players() -> None:
     """Jalankan DDL + load procedure untuk gold players."""
     sql_dir = PATHS["sql_dir"]
 
-    logger.info("=== DB LOAD: Gold Players ===")
+    logger.info("  ┌─ DB Load: Gold Players")
 
     execute_sql_file(sql_dir / "ddl_gold_players.sql")
     execute_sql_file(sql_dir / "proc_load_gold_players.sql")
     execute_sql("CALL gold.load_players_gold()")
 
-    logger.info("Gold players → PostgreSQL selesai ✅\n")
+    logger.info("  └─ Gold players → PostgreSQL done")
 
 
 if __name__ == "__main__":

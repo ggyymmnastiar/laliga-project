@@ -19,7 +19,7 @@ logger = get_logger(__name__)
 
 def ingest_teams() -> None:
     """Salin semua file JSON teams dari Source ke Bronze."""
-    logger.info("=== BRONZE INGESTION: Teams ===")
+    logger.info("  ┌─ Bronze Ingestion: Teams")
     ingest_files(
         source_dir=PATHS["source_teams"],
         target_dir=PATHS["bronze_teams"],

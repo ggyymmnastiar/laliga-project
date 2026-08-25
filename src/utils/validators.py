@@ -75,7 +75,7 @@ def validate_not_empty(df: pd.DataFrame, name: str) -> None:
             f"[DQ FAIL] {name}: DataFrame kosong (0 rows). "
             f"File sumber mungkin corrupt atau tidak terbaca."
         )
-    logger.info("  ✓ Not empty: %d rows", len(df))
+    logger.info("        └─ Not empty: %d rows", len(df))
 
 
 # ---------------------------------------------------------------------------
@@ -108,7 +108,7 @@ def validate_schema(
             f"[DQ FAIL] {name}: Kolom tak dikenal → {sorted(extra)}. "
             f"Kolom yang diharapkan: {sorted(expected)}"
         )
-    logger.info("  ✓ Schema: %d kolom sesuai", len(expected_columns))
+    logger.info("        └─ Schema: %d columns valid", len(expected_columns))
 
 
 # ---------------------------------------------------------------------------
@@ -131,7 +131,7 @@ def validate_no_missing(df: pd.DataFrame, name: str) -> None:
         raise ValueError(
             f"[DQ FAIL] {name}: Ditemukan missing values → {detail}"
         )
-    logger.info("  ✓ No missing values")
+    logger.info("        └─ No missing values")
 
 
 # ---------------------------------------------------------------------------
@@ -163,11 +163,11 @@ def validate_strip_whitespace(
     ]
     if changed:
         logger.warning(
-            "  ⚠ %s: Whitespace ditemukan dan dihapus pada kolom '%s': %s",
+            "        ⚠ %s: Whitespace found and removed in '%s': %s",
             name, column, ", ".join(changed),
         )
     else:
-        logger.info("  ✓ No whitespace issues pada kolom '%s'", column)
+        logger.info("        └─ No whitespace issues in '%s'", column)
 
     return df
 
@@ -195,7 +195,7 @@ def validate_no_duplicates(
         raise ValueError(
             f"[DQ FAIL] {name}: Duplikat pada kolom '{column}' → {dupe_values}"
         )
-    logger.info("  ✓ No duplicates pada kolom '%s'", column)
+    logger.info("        └─ No duplicates in '%s'", column)
 
 
 # ---------------------------------------------------------------------------
@@ -219,7 +219,7 @@ def validate_expected_rows(
             f"diharapkan = {expected}. "
             f"Apakah ada klub yang hilang atau ditambahkan?"
         )
-    logger.info("  ✓ Row count: %d (sesuai)", actual)
+    logger.info("        └─ Row count: %d (match)", actual)
 
 
 # ---------------------------------------------------------------------------
@@ -248,17 +248,16 @@ def validate_club_names(
 
     if unknown:
         logger.warning(
-            "  ⚠ %s: Nama club tidak dikenal → %s. "
-            "Mungkin ada perubahan nama klub atau typo.",
+            "        ⚠ %s: Unknown club names → %s",
             name, sorted(unknown),
         )
     if missing:
         logger.warning(
-            "  ⚠ %s: Club yang diharapkan tapi tidak ada → %s",
+            "        ⚠ %s: Expected clubs missing → %s",
             name, sorted(missing),
         )
     if not unknown and not missing:
-        logger.info("  ✓ Club names: semua 20 klub valid")
+        logger.info("        └─ Club names: all 20 clubs valid")
 
 
 # ---------------------------------------------------------------------------
@@ -294,7 +293,7 @@ def validate_numeric_columns(
             f"[DQ FAIL] {name}: Kolom berikut seharusnya numerik → "
             f"{', '.join(non_numeric)}"
         )
-    logger.info("  ✓ Numeric types: %d kolom valid", len(columns))
+    logger.info("        └─ Numeric types: %d columns valid", len(columns))
 
 
 # ---------------------------------------------------------------------------
@@ -312,7 +311,7 @@ def validate_percentages(
         ValueError: Jika ada nilai di luar rentang 0–100.
     """
     if not columns:
-        logger.info("  ✓ Percentage: tidak ada kolom pct untuk dicek")
+        logger.info("        └─ Percentage: no pct columns to check")
         return
 
     violations = []
@@ -331,7 +330,7 @@ def validate_percentages(
             f"[DQ FAIL] {name}: Nilai persentase di luar 0-100 → "
             f"{'; '.join(violations)}"
         )
-    logger.info("  ✓ Percentages: %d kolom dalam rentang 0-100", len(columns))
+    logger.info("        └─ Percentages: %d columns in range 0-100", len(columns))
 
 
 # ---------------------------------------------------------------------------
@@ -362,7 +361,7 @@ def validate_ranges(
                 range_specs[col] = DEFAULT_RANGES[col]
 
     if not range_specs:
-        logger.info("  ✓ Range: tidak ada range spec untuk dicek")
+        logger.info("        └─ Range: no range spec to check")
         return
 
     warnings_found = False
@@ -383,12 +382,12 @@ def validate_ranges(
             else:
                 details = [str(v) for v in out[col].tolist()]
             logger.warning(
-                "  ⚠ %s: Kolom '%s' di luar rentang wajar (%s–%s) → %s",
+                "        ⚠ %s: Column '%s' out of range (%s–%s) → %s",
                 name, col, low, high, ", ".join(details),
             )
 
     if not warnings_found:
-        logger.info("  ✓ Range: %d kolom dalam rentang wajar", len(range_specs))
+        logger.info("        └─ Range: %d columns within bounds", len(range_specs))
 
 
 # ---------------------------------------------------------------------------
@@ -407,7 +406,7 @@ def validate_consistency(
         ValueError: Jika ada baris dengan nilai berbeda.
     """
     if column not in df.columns:
-        logger.info("  ✓ Consistency: kolom '%s' tidak ada, skip", column)
+        logger.info("        └─ Consistency: column '%s' not found, skip", column)
         return
 
     unique_values = df[column].unique()
@@ -417,7 +416,7 @@ def validate_consistency(
             f"Diharapkan semua = {expected_value}, "
             f"ditemukan = {sorted(unique_values)}"
         )
-    logger.info("  ✓ Consistency: '%s' = %s untuk semua baris", column, expected_value)
+    logger.info("        └─ Consistency: '%s' = %s for all rows", column, expected_value)
 
 
 # ---------------------------------------------------------------------------
@@ -451,7 +450,7 @@ def run_all_validations(
     Returns:
         DataFrame yang sudah divalidasi (dengan whitespace di-strip).
     """
-    logger.info("── DQ Validation: %s ──", name)
+    logger.info("      ┌─ DQ Validation: %s", name)
 
     # 1. Empty check (paling fundamental)
     validate_not_empty(df, name)
@@ -487,5 +486,5 @@ def run_all_validations(
     if played_value is not None:
         validate_consistency(df, name, "played", played_value)
 
-    logger.info("── DQ Validation: %s — PASSED ✅ ──\n", name)
+    logger.info("      └─ DQ Validation: %s — PASSED ✅", name)
     return df

@@ -26,7 +26,7 @@ def load_silver_teams() -> None:
     """Jalankan DDL + load procedure untuk silver teams."""
     sql_dir = PATHS["sql_dir"]
 
-    logger.info("=== DB LOAD: Silver Teams ===")
+    logger.info("  ┌─ DB Load: Silver Teams")
 
     # 1. DDL — buat/replace tabel
     execute_sql_file(sql_dir / "ddl_teams.sql")
@@ -37,20 +37,28 @@ def load_silver_teams() -> None:
     # 3. CALL procedure (TRUNCATE + COPY)
     execute_sql("CALL silver.load_teams_silver()")
 
-    logger.info("Silver teams → PostgreSQL selesai ✅\n")
+    logger.info("  └─ Silver teams → PostgreSQL done")
+
+    # Log lokasi CSV lokal
+    clean_dir = PATHS["silver_teams_clean"]
+    csv_files = sorted(clean_dir.glob("*.csv"))
+    logger.info("  ┌─ Local CSV (silver) → %s", clean_dir)
+    for f in csv_files:
+        logger.info("  │  └─ %s  (%s KB)", f.name, round(f.stat().st_size / 1024, 1))
+    logger.info("  └─ %d files saved locally", len(csv_files))
 
 
 def load_silver_players() -> None:
     """Jalankan DDL + load procedure untuk silver players."""
     sql_dir = PATHS["sql_dir"]
 
-    logger.info("=== DB LOAD: Silver Players ===")
+    logger.info("  ┌─ DB Load: Silver Players")
 
     execute_sql_file(sql_dir / "ddl_players.sql")
     execute_sql_file(sql_dir / "proc_load_players.sql")
     execute_sql("CALL silver.load_players_silver()")
 
-    logger.info("Silver players → PostgreSQL selesai ✅\n")
+    logger.info("  └─ Silver players → PostgreSQL done")
 
 
 if __name__ == "__main__":
