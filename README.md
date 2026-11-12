@@ -271,8 +271,8 @@ The Gold layer integrates 12 Silver tables into two analysis-ready tables:
 
 | Table | Description | Columns |
 |-------|-------------|:-------:|
-| `gold.teams_statistics` | One Big Table — all team statistics joined by `club` | 52 |
-| `gold.teams_ml_features` | Subset of columns selected for ML feature engineering | ~30 |
+| `gold.teams_statistics` | One Big Table — all team statistics joined by `club` | 124 |
+| `gold.teams_ml_features` | Subset of columns selected for ML feature engineering | 61 |
 
 Both tables are exported to CSV at `data/gold/teams/` for use by downstream ML and dashboard components.
 
