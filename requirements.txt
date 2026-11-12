@@ -5,3 +5,7 @@ plotly
 scikit-learn
 matplotlib
 seaborn
+prefect
+psycopg2-binary
+python-dotenv
+sqlalchemy
